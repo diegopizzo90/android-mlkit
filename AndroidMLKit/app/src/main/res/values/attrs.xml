@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ItemFeature">
+        <attr name="text" format="reference" />
+        <attr name="imageSrc" format="reference" />
+        <attr name="backgroundColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="CodeScannerOverlay">
+        <attr name="box_format">
+            <enum name="barcode" value="0" />
+            <enum name="qr_code" value="1" />
+        </attr>
+        <attr name="box_width_percentage" format="integer" />
+        <attr name="box_height_percentage" format="integer" />
+    </declare-styleable>
+</resources>
