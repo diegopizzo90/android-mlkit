@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    //Used for camera barcode overlay
+    <dimen name="frame_stroke_width">4dp</dimen>
+    <dimen name="frame_corner_radius">8dp</dimen>
+    <dimen name="frame_ripple_size_offset">40dp</dimen>
+    <dimen name="frame_ripple_stroke_width">4dp</dimen>
+</resources>

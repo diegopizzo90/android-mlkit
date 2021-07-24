@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="main_color">#395373</color>
+    <color name="barcode_color">#f64c73</color>
+    <color name="qr_code_color">#21d2ba</color>
+    <color name="text_recognition_color">#c873f4</color>
+    <color name="face_recognition_color">#e09d99</color>
+
+    <!-- color used for camera barcode overlay -->
+    <color name="reticle_background">#CC000000</color>
+    <color name="reticle_stroke_light">#FFFFFF</color>
+    <color name="reticle_stroke_gray">#9AFFFFFF</color>
+    <color name="ripple">#9AFFFFFF</color>
 </resources>
