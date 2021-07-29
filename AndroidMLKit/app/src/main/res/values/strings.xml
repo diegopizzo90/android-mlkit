@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">AndroidMLKit</string>
     <string name="barcode_scan">Barcode Scan</string>
-    <string name="qr_code_scan">QrCode Scan</string>
+    <string name="qr_code_scan">QR Code Scan</string>
     <string name="text_recognition">Text Recognition</string>
     <string name="face_recognition">Face Recognition</string>
     <string name="camera_permission_denied">Camera permission denied</string>
     <string name="camera_not_available">Camera not available</string>
     <string name="error_during_barcode_scanning">Error during barcode scanning</string>
     <string name="point_your_camera_at_a_barcode">Point your camera at a barcode</string>
-    <string name="point_your_camera_at_a_qrcode">Point your camera at a QrCode</string>
+    <string name="point_your_camera_at_a_qrcode">Point your camera at a QR Code</string>
     <string name="data_scanned">Data scanned</string>
 </resources>

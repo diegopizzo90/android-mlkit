@@ -11,12 +11,15 @@
         android:label="MainFragment"
         tools:layout="@layout/fragment_main">
         <action
-            android:id="@+id/action_mainFragment_to_barcodeScanningFragment"
-            app:destination="@id/barcodeScanningFragment" />
+            android:id="@+id/action_mainFragment_to_cameraScanningFragment"
+            app:destination="@id/cameraScanningFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popExitAnim="@anim/slide_out_left" />
     </fragment>
     <fragment
-        android:id="@+id/barcodeScanningFragment"
-        android:name="com.diegopizzo.androidmlkit.view.BarcodeScanningFragment"
-        android:label="BarcodeScanningFragment"
-        tools:layout="@layout/fragment_barcode_scanning"/>
+        android:id="@+id/cameraScanningFragment"
+        android:name="com.diegopizzo.androidmlkit.view.CameraScanningFragment"
+        android:label="CameraScanningFragment"
+        tools:layout="@layout/fragment_camera_scanning" />
 </navigation>
