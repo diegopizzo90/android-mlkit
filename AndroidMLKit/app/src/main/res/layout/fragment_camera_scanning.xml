@@ -5,20 +5,17 @@
     android:layout_height="match_parent">
 
     <androidx.camera.view.PreviewView
-        android:id="@+id/barcode_camera_preview"
+        android:id="@+id/camera_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         app:scaleType="fillCenter" />
 
     <com.diegopizzo.androidmlkit.view.camera.CodeScannerOverlay
-        android:id="@+id/barcode_scanner_overlay"
+        android:id="@+id/camera_scanner_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layerType="software"
-        app:box_format="barcode"
-        app:box_height_percentage="20"
-        app:box_width_percentage="90" />
+        android:layerType="software" />
 
     <include
         android:id="@+id/camera_controller"

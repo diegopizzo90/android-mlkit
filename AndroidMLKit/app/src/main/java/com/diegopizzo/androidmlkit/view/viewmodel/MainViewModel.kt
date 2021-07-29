@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.diegopizzo.androidmlkit.util.SingleLiveEvent
 import com.diegopizzo.androidmlkit.view.navigation.IMLKitNavigation
+import com.diegopizzo.androidmlkit.view.navigation.ScanningType
 
 class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
 
@@ -27,10 +28,6 @@ class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
         viewState = MainViewState()
     }
 
-    fun onBarcodeScannerClicked() {
-        navigation.toBarcodeScanning()
-    }
-
     fun onDataScanned(dataScanned: String) {
         viewState = viewState.copy(isCameraEnabled = false)
         viewEffects().value = ViewEffect.ShowBottomSheetFragment(dataScanned)
@@ -45,6 +42,8 @@ class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
             ViewEvent.DialogCancelButtonClicked -> {
                 viewState = viewState.copy(isCameraEnabled = true)
             }
+            ViewEvent.BarcodeScanningButtonClicked -> navigation.toCameraScanning(ScanningType.BARCODE)
+            ViewEvent.QrCodeScanningButtonClicked -> navigation.toCameraScanning(ScanningType.QR_CODE)
         }
     }
 }
@@ -54,6 +53,8 @@ sealed class ViewEffect {
 }
 
 sealed class ViewEvent {
+    object BarcodeScanningButtonClicked : ViewEvent()
+    object QrCodeScanningButtonClicked : ViewEvent()
     object DialogCancelButtonClicked : ViewEvent()
 }
 

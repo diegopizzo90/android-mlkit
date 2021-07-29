@@ -42,9 +42,9 @@ class CodeScannerOverlay(context: Context, attrs: AttributeSet) : View(context, 
         resources.getDimensionPixelOffset(R.dimen.frame_ripple_stroke_width)
     private val rippleAlpha: Int = ripplePaint.alpha
     private val cameraAnimator = CameraAnimator(this)
-    private val boxFormat: BoxFormat
-    private val boxWidthPercentage: Int
-    private val boxHeightPercentage: Int
+    private var boxFormat: BoxFormat
+    private var boxWidthPercentage: Int
+    private var boxHeightPercentage: Int
 
     init {
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.CodeScannerOverlay)
@@ -90,6 +90,12 @@ class CodeScannerOverlay(context: Context, attrs: AttributeSet) : View(context, 
             RectF(cx - boxWidth / 2, cy - boxHeight / 2, cx + boxWidth / 2, cy + boxHeight / 2)
 
         invalidate()
+    }
+
+    fun setBoxFormatValue(boxFormatValue: BoxFormat) {
+        boxFormat = boxFormatValue
+        boxWidthPercentage = getDefaultBoxDimension(boxFormatValue).first
+        boxHeightPercentage = getDefaultBoxDimension(boxFormatValue).second
     }
 
     /**

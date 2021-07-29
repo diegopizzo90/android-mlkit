@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.TorchState
 import androidx.camera.view.PreviewView
 import androidx.lifecycle.Observer
@@ -14,24 +13,31 @@ import com.diegopizzo.androidmlkit.R
 import com.diegopizzo.androidmlkit.analyzer.BarcodeAnalyzer
 import com.diegopizzo.androidmlkit.analyzer.BaseImageAnalyzer
 import com.diegopizzo.androidmlkit.camera.base.BaseCameraScanningFragment
-import com.diegopizzo.androidmlkit.databinding.FragmentBarcodeScanningBinding
+import com.diegopizzo.androidmlkit.databinding.FragmentCameraScanningBinding
+import com.diegopizzo.androidmlkit.view.camera.CodeScannerOverlay
+import com.diegopizzo.androidmlkit.view.navigation.ScanningType
 import com.diegopizzo.androidmlkit.view.viewmodel.MainViewModel
 import com.diegopizzo.androidmlkit.view.viewmodel.MainViewState
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
-class BarcodeScanningFragment : BaseCameraScanningFragment<FragmentBarcodeScanningBinding>() {
+class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanningBinding>() {
 
     private val viewModel: MainViewModel by sharedViewModel()
 
-    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentBarcodeScanningBinding
-        get() = FragmentBarcodeScanningBinding::inflate
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentCameraScanningBinding
+        get() = FragmentCameraScanningBinding::inflate
 
     private var isFlashEnabled: Boolean = false
+    private lateinit var scanningType: ScanningType
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setRectangleOverlay()
         setCancelButton()
+        arguments?.getString(SCANNER_TYPE_BUNDLE_KEY)?.let {
+            scanningType = ScanningType.valueOf(it)
+            setUpView()
+        }
         viewModel.viewStates().observe(viewLifecycleOwner, viewStateObserver)
     }
 
@@ -41,8 +47,24 @@ class BarcodeScanningFragment : BaseCameraScanningFragment<FragmentBarcodeScanni
         }
     }
 
+    private fun setUpView() {
+        when (scanningType) {
+            ScanningType.BARCODE -> {
+                binding.cameraController.tvCameraTooltip.text =
+                    getString(R.string.point_your_camera_at_a_barcode)
+            }
+            ScanningType.QR_CODE -> {
+                binding.apply {
+                    cameraController.tvCameraTooltip.text =
+                        getString(R.string.point_your_camera_at_a_qrcode)
+                    cameraScannerOverlay.setBoxFormatValue(CodeScannerOverlay.BoxFormat.QRCode)
+                }
+            }
+        }
+    }
+
     override fun getCameraPreviewView(): PreviewView {
-        return binding.barcodeCameraPreview
+        return binding.cameraPreview
     }
 
     override var scanningCameraListener: ScanningCameraListener? = object : ScanningCameraListener {
@@ -71,7 +93,7 @@ class BarcodeScanningFragment : BaseCameraScanningFragment<FragmentBarcodeScanni
             }
 
             override fun onNoDataScanned() {
-                binding.barcodeScannerOverlay.onCodeScanning()
+                binding.cameraScannerOverlay.onCodeScanning()
             }
 
             override fun onDataScanningError(e: Exception, source: BaseImageAnalyzer.Source) {
@@ -83,20 +105,20 @@ class BarcodeScanningFragment : BaseCameraScanningFragment<FragmentBarcodeScanni
         Toast.makeText(requireContext(), getString(messageRes), Toast.LENGTH_LONG).show()
     }
 
-    override val barcodeAnalyzer: ImageAnalysis.Analyzer by lazy {
+    override val barcodeAnalyzer: BaseImageAnalyzer by lazy {
         BarcodeAnalyzer(
-            cropPercentageWidth = binding.barcodeScannerOverlay.percentageWidthCropped(),
-            cropPercentageHeight = binding.barcodeScannerOverlay.percentageHeightCropped()
-        ).apply {
-            listener = analyzerListener
-        }
+            cropPercentageWidth = binding.cameraScannerOverlay.percentageWidthCropped(),
+            cropPercentageHeight = binding.cameraScannerOverlay.percentageHeightCropped(),
+            analyzerListener,
+            isQrCode = scanningType == ScanningType.QR_CODE
+        )
     }
 
-    override val textRecognitionAnalyzer: ImageAnalysis.Analyzer? = null
+    override val textRecognitionAnalyzer: BaseImageAnalyzer? = null
 
     private fun setRectangleOverlay() {
-        binding.barcodeScannerOverlay.post {
-            binding.barcodeScannerOverlay.createView()
+        binding.cameraScannerOverlay.post {
+            binding.cameraScannerOverlay.createView()
         }
     }
 
@@ -131,6 +153,11 @@ class BarcodeScanningFragment : BaseCameraScanningFragment<FragmentBarcodeScanni
 
     override fun onDestroyView() {
         super.onDestroyView()
-        (barcodeAnalyzer as BarcodeAnalyzer).listener = null
+        barcodeAnalyzer.disposeAnalyzer()
+        textRecognitionAnalyzer?.disposeAnalyzer()
+    }
+
+    companion object {
+        const val SCANNER_TYPE_BUNDLE_KEY = "SCANNER_TYPE_BUNDLE_KEY"
     }
 }
