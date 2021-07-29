@@ -9,6 +9,12 @@ abstract class BaseImageAnalyzer : ImageAnalysis.Analyzer {
         imageProxy.close()
     }
 
+    protected abstract var listener: AnalyzerListener?
+
+    fun disposeAnalyzer() {
+        listener = null
+    }
+
     interface AnalyzerListener {
         fun onDataScanned(dataScanned: String, source: Source)
         fun onNoDataScanned()

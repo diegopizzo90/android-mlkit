@@ -9,10 +9,9 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizerOptions
 
 class TextRecognition(
-    private var listener: AnalyzerListener?,
-    private val textValidator: ((textScanned: String) -> Boolean)? = null,
     private val cropPercentageWidth: Int? = null,
-    private val cropPercentageHeight: Int? = null
+    private val cropPercentageHeight: Int? = null,
+    override var listener: AnalyzerListener?
 ) : BaseImageAnalyzer() {
 
     @ExperimentalGetImage
@@ -36,9 +35,7 @@ class TextRecognition(
 
         recognizer.process(imageToProcess)
             .addOnSuccessListener { visionText ->
-                if (textValidator?.invoke(visionText.text) == true) {
-                    listener?.onDataScanned(visionText.text, TEXT_RECOGNITION)
-                }
+                listener?.onDataScanned(visionText.text, TEXT_RECOGNITION)
             }
             .addOnCompleteListener {
                 closeScanning(imageProxy)
