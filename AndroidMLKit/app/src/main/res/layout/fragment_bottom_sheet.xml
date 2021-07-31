@@ -12,31 +12,17 @@
         android:background="@drawable/bottom_sheet_background">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_data_scanned_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/data_scanned"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/guideline" />
-
-        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_data_scanned"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="24dp"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_data_scanned_label"
+            app:layout_constraintTop_toBottomOf="@+id/guideline"
             tools:text="3286176371782131241" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -44,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.35" />
+            app:layout_constraintGuide_percent="0.2" />
 
         <ImageView
             android:id="@+id/iv_cancel"
@@ -55,6 +41,61 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_close_black" />
+
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/light_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_data_scanned" />
+
+        <com.diegopizzo.androidmlkit.view.ItemMenu
+            android:id="@+id/im_share"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:itemMenuImageSrc="@drawable/ic_share"
+            app:itemMenuText="@string/share"
+            app:layout_constraintBottom_toTopOf="@+id/im_copy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider1" />
+
+        <com.diegopizzo.androidmlkit.view.ItemMenu
+            android:id="@+id/im_copy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:itemMenuImageSrc="@drawable/ic_content_copy"
+            app:itemMenuText="@string/copy"
+            app:layout_constraintBottom_toTopOf="@+id/im_open_link"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/im_share" />
+
+        <com.diegopizzo.androidmlkit.view.ItemMenu
+            android:id="@+id/im_open_link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:itemMenuImageSrc="@drawable/ic_open_in_new"
+            app:itemMenuText="@string/open_link"
+            app:layout_constraintBottom_toTopOf="@id/guideline2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/im_copy" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.85" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

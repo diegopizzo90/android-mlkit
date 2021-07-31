@@ -1,11 +1,15 @@
 package com.diegopizzo.androidmlkit.view.viewmodel
 
+import android.util.Patterns
+import android.webkit.URLUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.diegopizzo.androidmlkit.util.SingleLiveEvent
 import com.diegopizzo.androidmlkit.view.navigation.IMLKitNavigation
 import com.diegopizzo.androidmlkit.view.navigation.ScanningType
+import com.diegopizzo.androidmlkit.view.viewmodel.ViewEffect.ShowBottomSheetFragment
+import com.diegopizzo.androidmlkit.view.viewmodel.ViewEvent.*
 
 class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
 
@@ -28,9 +32,16 @@ class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
         viewState = MainViewState()
     }
 
+    private fun isUrlValid(url: String): Boolean {
+        return Patterns.WEB_URL.matcher(url).matches() && URLUtil.isValidUrl(url)
+    }
+
     fun onDataScanned(dataScanned: String) {
-        viewState = viewState.copy(isCameraEnabled = false)
-        viewEffects().value = ViewEffect.ShowBottomSheetFragment(dataScanned)
+        viewState = viewState.copy(
+            isCameraEnabled = false,
+            isOpenLinkButtonVisible = isUrlValid(dataScanned)
+        )
+        _viewEffects.value = ShowBottomSheetFragment(dataScanned)
     }
 
     fun onCancelButtonClicked() {
@@ -39,11 +50,11 @@ class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
 
     fun process(viewEvent: ViewEvent) {
         when (viewEvent) {
-            ViewEvent.DialogCancelButtonClicked -> {
+            BottomDialogCancelButtonClicked -> {
                 viewState = viewState.copy(isCameraEnabled = true)
             }
-            ViewEvent.BarcodeScanningButtonClicked -> navigation.toCameraScanning(ScanningType.BARCODE)
-            ViewEvent.QrCodeScanningButtonClicked -> navigation.toCameraScanning(ScanningType.QR_CODE)
+            BarcodeScanningButtonClicked -> navigation.toCameraScanning(ScanningType.BARCODE)
+            QrCodeScanningButtonClicked -> navigation.toCameraScanning(ScanningType.QR_CODE)
         }
     }
 }
@@ -55,7 +66,10 @@ sealed class ViewEffect {
 sealed class ViewEvent {
     object BarcodeScanningButtonClicked : ViewEvent()
     object QrCodeScanningButtonClicked : ViewEvent()
-    object DialogCancelButtonClicked : ViewEvent()
+    object BottomDialogCancelButtonClicked : ViewEvent()
 }
 
-data class MainViewState(val isCameraEnabled: Boolean? = null)
+data class MainViewState(
+    val isCameraEnabled: Boolean? = null,
+    val isOpenLinkButtonVisible: Boolean = false
+)
