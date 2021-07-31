@@ -14,4 +14,13 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="SelectableItemTheme">
+        <item name="colorControlHighlight">@color/light_gray</item>
+    </style>
+
+    <style name="SelectableItemForWhiteBackground">
+        <item name="android:theme">@style/SelectableItemTheme</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
 </resources>

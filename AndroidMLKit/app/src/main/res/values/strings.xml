@@ -10,4 +10,8 @@
     <string name="point_your_camera_at_a_barcode">Point your camera at a barcode</string>
     <string name="point_your_camera_at_a_qrcode">Point your camera at a QR Code</string>
     <string name="data_scanned">Data scanned</string>
+    <string name="share">Share</string>
+    <string name="copy">Copy to clipboard</string>
+    <string name="open_link">Open link</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
 </resources>
