@@ -2,7 +2,6 @@ package com.diegopizzo.androidmlkit.analyzer
 
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
-import com.diegopizzo.androidmlkit.analyzer.BaseImageAnalyzer.Source.BARCODE_ANALYZER
 import com.diegopizzo.androidmlkit.camera.utils.ImageUtils
 import com.google.mlkit.vision.barcode.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -32,7 +31,7 @@ class BarcodeAnalyzer(
         ).build()
 
     private val qrCodeOptions = BarcodeScannerOptions.Builder()
-        .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+        .setBarcodeFormats(Barcode.FORMAT_QR_CODE, Barcode.FORMAT_AZTEC)
         .build()
 
     @ExperimentalGetImage
@@ -59,7 +58,7 @@ class BarcodeAnalyzer(
                 it.firstOrNull().let { barcode ->
                     val rawValue = barcode?.rawValue
                     if (rawValue != null) {
-                        listener?.onDataScanned(rawValue, BARCODE_ANALYZER)
+                        listener?.onDataScanned(rawValue)
                     } else {
                         listener?.onNoDataScanned()
                     }
@@ -70,7 +69,7 @@ class BarcodeAnalyzer(
             }
             .addOnFailureListener {
                 closeScanning(imageProxy)
-                listener?.onDataScanningError(it, BARCODE_ANALYZER)
+                listener?.onDataScanningError(it)
             }
 
     }

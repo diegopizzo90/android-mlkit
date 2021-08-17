@@ -23,11 +23,19 @@ class MainFragment : FragmentViewBinding<FragmentMainBinding>() {
     }
 
     private fun setClickListeners() {
-        binding.itemBarcode.setClickListener {
-            viewModel.process(ViewEvent.BarcodeScanningButtonClicked)
-        }
-        binding.itemQrCode.setClickListener {
-            viewModel.process(ViewEvent.QrCodeScanningButtonClicked)
+        binding.apply {
+            itemBarcode.setClickListener {
+                viewModel.process(ViewEvent.BarcodeScanningButtonClicked)
+            }
+            itemQrCode.setClickListener {
+                viewModel.process(ViewEvent.QrCodeScanningButtonClicked)
+            }
+            itemTextRecognition.setClickListener {
+                viewModel.process(ViewEvent.TextRecognitionScanningButtonClicked)
+            }
+            itemFaceRecognition.setClickListener {
+                viewModel.process(ViewEvent.FaceRecognitionScanningButtonClicked)
+            }
         }
     }
 }

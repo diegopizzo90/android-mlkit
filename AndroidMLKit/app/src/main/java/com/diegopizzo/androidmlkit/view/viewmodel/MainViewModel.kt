@@ -10,6 +10,7 @@ import com.diegopizzo.androidmlkit.view.navigation.IMLKitNavigation
 import com.diegopizzo.androidmlkit.view.navigation.ScanningType
 import com.diegopizzo.androidmlkit.view.viewmodel.ViewEffect.ShowBottomSheetFragment
 import com.diegopizzo.androidmlkit.view.viewmodel.ViewEvent.*
+import com.google.mlkit.vision.face.Face
 
 class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
 
@@ -33,15 +34,31 @@ class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
     }
 
     private fun isUrlValid(url: String): Boolean {
-        return Patterns.WEB_URL.matcher(url).matches() && URLUtil.isValidUrl(url)
+        return Patterns.WEB_URL.matcher(url).matches() || URLUtil.isValidUrl(url)
+    }
+
+    private fun formatData(dataScanned: String, isUrlValid: Boolean): String {
+        return if (isUrlValid && !dataScanned.startsWith("http://") && !dataScanned.startsWith("https://")) {
+            "http://$dataScanned"
+        } else dataScanned
     }
 
     fun onDataScanned(dataScanned: String) {
+        val isUrlValid = isUrlValid(dataScanned)
         viewState = viewState.copy(
             isCameraEnabled = false,
-            isOpenLinkButtonVisible = isUrlValid(dataScanned)
+            isOpenLinkButtonVisible = isUrlValid
         )
-        _viewEffects.value = ShowBottomSheetFragment(dataScanned)
+        _viewEffects.value = ShowBottomSheetFragment(formatData(dataScanned, isUrlValid))
+    }
+
+    fun onDataScanned(faceData: Face, width: Int, height: Int) {
+        viewState = viewState.copy(
+            isCameraEnabled = null,
+            faceData = faceData,
+            imageWidth = width,
+            imageHeight = height
+        )
     }
 
     fun onCancelButtonClicked() {
@@ -55,6 +72,8 @@ class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
             }
             BarcodeScanningButtonClicked -> navigation.toCameraScanning(ScanningType.BARCODE)
             QrCodeScanningButtonClicked -> navigation.toCameraScanning(ScanningType.QR_CODE)
+            TextRecognitionScanningButtonClicked -> navigation.toCameraScanning(ScanningType.TEXT_RECOGNITION)
+            FaceRecognitionScanningButtonClicked -> navigation.toCameraScanning(ScanningType.FACE_RECOGNITION)
         }
     }
 }
@@ -66,10 +85,15 @@ sealed class ViewEffect {
 sealed class ViewEvent {
     object BarcodeScanningButtonClicked : ViewEvent()
     object QrCodeScanningButtonClicked : ViewEvent()
+    object TextRecognitionScanningButtonClicked : ViewEvent()
+    object FaceRecognitionScanningButtonClicked : ViewEvent()
     object BottomDialogCancelButtonClicked : ViewEvent()
 }
 
 data class MainViewState(
     val isCameraEnabled: Boolean? = null,
-    val isOpenLinkButtonVisible: Boolean = false
+    val isOpenLinkButtonVisible: Boolean = false,
+    val faceData: Face? = null,
+    val imageWidth: Int = 0,
+    val imageHeight: Int = 0
 )

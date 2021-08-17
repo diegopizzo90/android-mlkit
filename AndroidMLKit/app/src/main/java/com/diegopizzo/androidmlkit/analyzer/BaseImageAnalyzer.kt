@@ -2,6 +2,7 @@ package com.diegopizzo.androidmlkit.analyzer
 
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import com.google.mlkit.vision.face.Face
 
 abstract class BaseImageAnalyzer : ImageAnalysis.Analyzer {
 
@@ -16,12 +17,9 @@ abstract class BaseImageAnalyzer : ImageAnalysis.Analyzer {
     }
 
     interface AnalyzerListener {
-        fun onDataScanned(dataScanned: String, source: Source)
+        fun onDataScanned(dataScanned: String)
         fun onNoDataScanned()
-        fun onDataScanningError(e: Exception, source: Source)
-    }
-
-    enum class Source {
-        BARCODE_ANALYZER, TEXT_RECOGNITION
+        fun onDataScanningError(e: Exception)
+        fun onFaceDataScanned(faceData: Face, width: Int, height: Int)
     }
 }

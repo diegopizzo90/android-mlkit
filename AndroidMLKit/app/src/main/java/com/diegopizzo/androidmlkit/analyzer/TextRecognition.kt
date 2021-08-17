@@ -2,11 +2,10 @@ package com.diegopizzo.androidmlkit.analyzer
 
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
-import com.diegopizzo.androidmlkit.analyzer.BaseImageAnalyzer.Source.TEXT_RECOGNITION
 import com.diegopizzo.androidmlkit.camera.utils.ImageUtils
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.TextRecognizerOptions
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
 class TextRecognition(
     private val cropPercentageWidth: Int? = null,
@@ -35,14 +34,16 @@ class TextRecognition(
 
         recognizer.process(imageToProcess)
             .addOnSuccessListener { visionText ->
-                listener?.onDataScanned(visionText.text, TEXT_RECOGNITION)
+                if (visionText.text.isNotEmpty()) {
+                    listener?.onDataScanned(visionText.text)
+                }
             }
             .addOnCompleteListener {
                 closeScanning(imageProxy)
             }
             .addOnFailureListener {
                 closeScanning(imageProxy)
-                listener?.onDataScanningError(it, TEXT_RECOGNITION)
+                listener?.onDataScanningError(it)
             }
     }
 }

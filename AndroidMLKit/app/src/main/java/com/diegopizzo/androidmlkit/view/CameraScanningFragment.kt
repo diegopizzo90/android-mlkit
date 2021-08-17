@@ -6,18 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.camera.core.CameraSelector
 import androidx.camera.core.TorchState
 import androidx.camera.view.PreviewView
 import androidx.lifecycle.Observer
 import com.diegopizzo.androidmlkit.R
 import com.diegopizzo.androidmlkit.analyzer.BarcodeAnalyzer
 import com.diegopizzo.androidmlkit.analyzer.BaseImageAnalyzer
+import com.diegopizzo.androidmlkit.analyzer.FaceRecognition
+import com.diegopizzo.androidmlkit.analyzer.TextRecognition
 import com.diegopizzo.androidmlkit.camera.base.BaseCameraScanningFragment
 import com.diegopizzo.androidmlkit.databinding.FragmentCameraScanningBinding
 import com.diegopizzo.androidmlkit.view.camera.CodeScannerOverlay
+import com.diegopizzo.androidmlkit.view.camera.FaceScannerLandmarkOverlay
 import com.diegopizzo.androidmlkit.view.navigation.ScanningType
 import com.diegopizzo.androidmlkit.view.viewmodel.MainViewModel
 import com.diegopizzo.androidmlkit.view.viewmodel.MainViewState
+import com.google.mlkit.vision.face.Face
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanningBinding>() {
@@ -28,7 +33,9 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
         get() = FragmentCameraScanningBinding::inflate
 
     private var isFlashEnabled: Boolean = false
-    private lateinit var scanningType: ScanningType
+
+    override var defaultCameraSelector: Int = CameraSelector.LENS_FACING_BACK
+    override lateinit var scanningType: ScanningType
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,30 +43,86 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
         setCancelButton()
         arguments?.getString(SCANNER_TYPE_BUNDLE_KEY)?.let {
             scanningType = ScanningType.valueOf(it)
-            setUpView()
         }
+        setUpView()
         viewModel.viewStates().observe(viewLifecycleOwner, viewStateObserver)
     }
 
-    private val viewStateObserver = Observer<MainViewState> {
-        if (it?.isCameraEnabled != null) {
-            if (it.isCameraEnabled) startCamera() else stopCamera()
+    private val viewStateObserver = Observer<MainViewState> { newViewState ->
+        newViewState.apply {
+            if (isCameraEnabled != null) {
+                if (isCameraEnabled) startCamera() else stopCamera()
+            }
+            faceData?.let {
+                binding.apply {
+                    faceScannerOverlay.setFaceValues(it)
+                    faceScannerLandmarkOverlay.setImageSourceInfo(
+                        imageWidth,
+                        imageHeight,
+                        defaultCameraSelector == CameraSelector.LENS_FACING_FRONT,
+                        isPortraitMode()
+                    )
+                    faceScannerLandmarkOverlay.clear()
+                    faceScannerLandmarkOverlay.add(
+                        FaceScannerLandmarkOverlay(
+                            faceScannerLandmarkOverlay,
+                            faceData
+                        )
+                    )
+                }
+            }
         }
     }
 
     private fun setUpView() {
         when (scanningType) {
             ScanningType.BARCODE -> {
-                binding.cameraController.tvCameraTooltip.text =
-                    getString(R.string.point_your_camera_at_a_barcode)
+                setDefaultOverlay()
+                binding.apply {
+                    cameraController.tvCameraTooltip.text =
+                        getString(R.string.point_your_camera_at_a_barcode)
+                    faceScannerOverlay.visibility = View.GONE
+                }
             }
             ScanningType.QR_CODE -> {
+                setDefaultOverlay()
                 binding.apply {
                     cameraController.tvCameraTooltip.text =
                         getString(R.string.point_your_camera_at_a_qrcode)
                     cameraScannerOverlay.setBoxFormatValue(CodeScannerOverlay.BoxFormat.QRCode)
+                    faceScannerOverlay.visibility = View.GONE
                 }
             }
+            ScanningType.TEXT_RECOGNITION -> {
+                setDefaultOverlay()
+                binding.apply {
+                    cameraController.tvCameraTooltip.text =
+                        getString(R.string.point_your_camera_at_any_text)
+                    cameraScannerOverlay.setBoxFormatValue(CodeScannerOverlay.BoxFormat.TextRecognition)
+                    faceScannerOverlay.visibility = View.GONE
+                }
+            }
+            ScanningType.FACE_RECOGNITION -> {
+                defaultCameraSelector = CameraSelector.LENS_FACING_FRONT
+                setFaceRecognitionOverlay()
+                binding.cameraController.tvCameraTooltip.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun setDefaultOverlay() {
+        binding.apply {
+            cameraScannerOverlay.visibility = View.VISIBLE
+            faceScannerOverlay.visibility = View.GONE
+            faceScannerLandmarkOverlay.visibility = View.GONE
+        }
+    }
+
+    private fun setFaceRecognitionOverlay() {
+        binding.apply {
+            cameraScannerOverlay.visibility = View.GONE
+            faceScannerOverlay.visibility = View.VISIBLE
+            faceScannerLandmarkOverlay.visibility = View.VISIBLE
         }
     }
 
@@ -88,16 +151,22 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
 
     private var analyzerListener: BaseImageAnalyzer.AnalyzerListener? =
         object : BaseImageAnalyzer.AnalyzerListener {
-            override fun onDataScanned(dataScanned: String, source: BaseImageAnalyzer.Source) {
+            override fun onDataScanned(dataScanned: String) {
                 viewModel.onDataScanned(dataScanned)
             }
 
             override fun onNoDataScanned() {
-                binding.cameraScannerOverlay.onCodeScanning()
+                binding.apply {
+                    if (cameraScannerOverlay.visibility == View.VISIBLE) cameraScannerOverlay.onCodeScanning()
+                }
             }
 
-            override fun onDataScanningError(e: Exception, source: BaseImageAnalyzer.Source) {
+            override fun onDataScanningError(e: Exception) {
                 showToastMessage(R.string.error_during_barcode_scanning)
+            }
+
+            override fun onFaceDataScanned(faceData: Face, width: Int, height: Int) {
+                viewModel.onDataScanned(faceData, width, height)
             }
         }
 
@@ -105,7 +174,8 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
         Toast.makeText(requireContext(), getString(messageRes), Toast.LENGTH_LONG).show()
     }
 
-    override val barcodeAnalyzer: BaseImageAnalyzer by lazy {
+    override val barcodeAnalyzer: BaseImageAnalyzer? by lazy {
+        if (scanningType != ScanningType.BARCODE && scanningType != ScanningType.QR_CODE) return@lazy null
         BarcodeAnalyzer(
             cropPercentageWidth = binding.cameraScannerOverlay.percentageWidthCropped(),
             cropPercentageHeight = binding.cameraScannerOverlay.percentageHeightCropped(),
@@ -114,7 +184,19 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
         )
     }
 
-    override val textRecognitionAnalyzer: BaseImageAnalyzer? = null
+    override val textRecognitionAnalyzer: BaseImageAnalyzer? by lazy {
+        if (scanningType != ScanningType.TEXT_RECOGNITION) return@lazy null
+        TextRecognition(
+            cropPercentageWidth = binding.cameraScannerOverlay.percentageWidthCropped(),
+            cropPercentageHeight = binding.cameraScannerOverlay.percentageHeightCropped(),
+            listener = analyzerListener
+        )
+    }
+
+    override val faceRecognitionAnalyzer: BaseImageAnalyzer? by lazy {
+        if (scanningType != ScanningType.FACE_RECOGNITION) return@lazy null
+        FaceRecognition(analyzerListener)
+    }
 
     private fun setRectangleOverlay() {
         binding.cameraScannerOverlay.post {
@@ -153,8 +235,9 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
 
     override fun onDestroyView() {
         super.onDestroyView()
-        barcodeAnalyzer.disposeAnalyzer()
+        barcodeAnalyzer?.disposeAnalyzer()
         textRecognitionAnalyzer?.disposeAnalyzer()
+        faceRecognitionAnalyzer?.disposeAnalyzer()
     }
 
     companion object {

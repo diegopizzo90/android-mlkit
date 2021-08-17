@@ -69,6 +69,10 @@ class CodeScannerOverlay(context: Context, attrs: AttributeSet) : View(context, 
         return when (boxFormat) {
             BoxFormat.Barcode -> Pair(BARCODE_WIDTH_DEFAULT, BARCODE_HEIGHT_DEFAULT)
             BoxFormat.QRCode -> Pair(QR_CODE_WIDTH_DEFAULT, QR_CODE_HEIGHT_DEFAULT)
+            BoxFormat.TextRecognition -> Pair(
+                TEXT_RECOGNITION_WIDTH_DEFAULT,
+                TEXT_RECOGNITION_HEIGHT_DEFAULT
+            )
         }
     }
 
@@ -164,7 +168,7 @@ class CodeScannerOverlay(context: Context, attrs: AttributeSet) : View(context, 
 
 
     enum class BoxFormat(val value: Int) {
-        Barcode(0), QRCode(1)
+        Barcode(0), QRCode(1), TextRecognition(2)
     }
 
     companion object {
@@ -178,5 +182,8 @@ class CodeScannerOverlay(context: Context, attrs: AttributeSet) : View(context, 
 
         private const val QR_CODE_WIDTH_DEFAULT = 80
         private const val QR_CODE_HEIGHT_DEFAULT = 36
+
+        private const val TEXT_RECOGNITION_WIDTH_DEFAULT = 80
+        private const val TEXT_RECOGNITION_HEIGHT_DEFAULT = 20
     }
 }

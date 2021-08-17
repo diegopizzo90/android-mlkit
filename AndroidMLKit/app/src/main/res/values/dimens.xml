@@ -2,7 +2,11 @@
 <resources>
     //Used for camera barcode overlay
     <dimen name="frame_stroke_width">4dp</dimen>
+    <dimen name="line_width">20dp</dimen>
     <dimen name="frame_corner_radius">8dp</dimen>
     <dimen name="frame_ripple_size_offset">40dp</dimen>
     <dimen name="frame_ripple_stroke_width">4dp</dimen>
+
+    <dimen name="text_box_stroke_width">1dp</dimen>
+    <dimen name="text_box_size">16dp</dimen>
 </resources>

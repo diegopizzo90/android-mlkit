@@ -5,13 +5,21 @@
     <string name="text_recognition">Text Recognition</string>
     <string name="face_recognition">Face Recognition</string>
     <string name="camera_permission_denied">Camera permission denied</string>
+    <string name="action_can_not_be_performed">Action can not be performed</string>
     <string name="camera_not_available">Camera not available</string>
     <string name="error_during_barcode_scanning">Error during barcode scanning</string>
     <string name="point_your_camera_at_a_barcode">Point your camera at a barcode</string>
     <string name="point_your_camera_at_a_qrcode">Point your camera at a QR Code</string>
+    <string name="point_your_camera_at_any_text">Point your camera at any text</string>
     <string name="data_scanned">Data scanned</string>
     <string name="share">Share</string>
     <string name="copy">Copy to clipboard</string>
     <string name="open_link">Open link</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="head_rotation_x">Head rotation X: %1$f</string>
+    <string name="head_rotation_y">Head rotation Y: %1$f</string>
+    <string name="head_rotation_z">Head rotation Z: %1$f</string>
+    <string name="smiling_probability">Smiling probability: %1$s%%</string>
+    <string name="left_eye_opened_prob">Left eye opened prob: %1$s%%</string>
+    <string name="right_eye_opened_prob">Right eye opened prob: %1$s%%</string>
 </resources>

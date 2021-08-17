@@ -6,5 +6,5 @@ interface IMLKitNavigation {
 }
 
 enum class ScanningType {
-    BARCODE, QR_CODE
+    BARCODE, QR_CODE, TEXT_RECOGNITION, FACE_RECOGNITION, MULTIPLE
 }

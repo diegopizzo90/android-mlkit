@@ -109,7 +109,12 @@ object ImageUtils {
         return AspectRatio.RATIO_16_9
     }
 
-    fun cropImage(imageToAnalyze: Image, rotationDegrees: Int, desiredWidth: Int, desiredHeight: Int): Bitmap {
+    fun cropImage(
+        imageToAnalyze: Image,
+        rotationDegrees: Int,
+        desiredWidth: Int,
+        desiredHeight: Int
+    ): Bitmap {
         // We requested a setTargetAspectRatio, but it's not guaranteed that's what the camera
         // stack is able to support, so we calculate the actual ratio from the first frame to
         // know how to appropriately crop the image we want to analyze.
@@ -141,10 +146,68 @@ object ImageUtils {
         return rotateAndCrop(imageToAnalyzeBitmap, rotationDegrees, cropRect)
     }
 
+    fun croppedNV21(mediaImage: Image, cropRect: Rect): ByteArray {
+        val yBuffer = mediaImage.planes[0].buffer // Y
+        val vuBuffer = mediaImage.planes[2].buffer // VU
+
+        val ySize = yBuffer.remaining()
+        val vuSize = vuBuffer.remaining()
+
+        val nv21 = ByteArray(ySize + vuSize)
+
+        yBuffer.get(nv21, 0, ySize)
+        vuBuffer.get(nv21, ySize, vuSize)
+
+        return cropByteArray(nv21, mediaImage.width, cropRect)
+    }
+
+    private fun cropByteArray(array: ByteArray, imageWidth: Int, cropRect: Rect): ByteArray {
+        val croppedArray = ByteArray(cropRect.width() * cropRect.height())
+        var i = 0
+        array.forEachIndexed { index, byte ->
+            val x = index % imageWidth
+            val y = index / imageWidth
+
+            if (cropRect.left <= x && x < cropRect.right && cropRect.top <= y && y < cropRect.bottom) {
+                croppedArray[i] = byte
+                i++
+            }
+        }
+
+        return croppedArray
+    }
+
+    fun cropByteArray(src: ByteArray, width: Int, height: Int, cropRect: Rect): ByteArray {
+        val x = cropRect.left * 2 / 2
+        val y = cropRect.top * 2 / 2
+        val w = cropRect.width() * 2 / 2
+        val h = cropRect.height() * 2 / 2
+        val yUnit = w * h
+        val uv = yUnit / 2
+        val nData = ByteArray(yUnit + uv)
+        val uvIndexDst = w * h - y / 2 * w
+        val uvIndexSrc = width * height + x
+        var srcPos0 = y * width
+        var destPos0 = 0
+        var uvSrcPos0 = uvIndexSrc
+        var uvDestPos0 = uvIndexDst
+        for (i in y until y + h) {
+            System.arraycopy(src, srcPos0 + x, nData, destPos0, w) //y memory block copy
+            srcPos0 += width
+            destPos0 += w
+            if (i and 1 == 0) {
+                System.arraycopy(src, uvSrcPos0, nData, uvDestPos0, w) //uv memory block copy
+                uvSrcPos0 += width
+                uvDestPos0 += w
+            }
+        }
+        return nData
+    }
+
+
     private const val RATIO_4_3_VALUE = 4.0 / 3.0
     private const val RATIO_16_9_VALUE = 16.0 / 9.0
 }
-
 private fun Byte.toIntUnsigned(): Int {
     return toInt() and 0xFF
 }

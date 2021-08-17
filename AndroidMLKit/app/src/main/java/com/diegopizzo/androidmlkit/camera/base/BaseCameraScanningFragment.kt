@@ -1,8 +1,11 @@
 package com.diegopizzo.androidmlkit.camera.base
 
 import android.Manifest
+import android.content.res.Configuration
+import android.graphics.Point
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Size
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
@@ -17,6 +20,7 @@ import androidx.viewbinding.ViewBinding
 import com.diegopizzo.androidmlkit.base.FragmentViewBinding
 import com.diegopizzo.androidmlkit.camera.utils.ImageUtils
 import com.diegopizzo.androidmlkit.util.isTrue
+import com.diegopizzo.androidmlkit.view.navigation.ScanningType
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -32,19 +36,25 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
     private lateinit var cameraExecutor: ExecutorService
     private var barcodeImageAnalysis: ImageAnalysis? = null
     private var textRecognitionImageAnalysis: ImageAnalysis? = null
+    private var faceRecognitionImageAnalysis: ImageAnalysis? = null
     private var camera: Camera? = null
     private var cameraProvider: ProcessCameraProvider? = null
 
     //Provide listener on scanning result
     protected abstract var scanningCameraListener: ScanningCameraListener?
 
-    private var defaultCameraSelector: Int = CameraSelector.LENS_FACING_BACK
+    protected abstract var defaultCameraSelector: Int
 
     //Provide image analyzer to scan barcode or qrcode
     protected abstract val barcodeAnalyzer: ImageAnalysis.Analyzer?
 
     //Provide image analyzer to scan a text
     protected abstract val textRecognitionAnalyzer: ImageAnalysis.Analyzer?
+
+    //Provide image analyzer to scan a face
+    protected abstract val faceRecognitionAnalyzer: ImageAnalysis.Analyzer?
+
+    protected abstract val scanningType: ScanningType
 
     private val requestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -64,20 +74,41 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
     }
 
     private fun buildCameraPreview(screenAspectRatio: Int, rotation: Int): Preview {
-        return Preview.Builder()
-            .setTargetAspectRatio(screenAspectRatio)
-            .setTargetRotation(rotation)
-            .build().also {
-                it.setSurfaceProvider(getCameraPreviewView().surfaceProvider)
+        return when (scanningType) {
+            ScanningType.BARCODE, ScanningType.QR_CODE, ScanningType.TEXT_RECOGNITION -> {
+                Preview.Builder()
+                    .setTargetAspectRatio(screenAspectRatio)
+                    .setTargetRotation(rotation)
+                    .build().also {
+                        it.setSurfaceProvider(getCameraPreviewView().surfaceProvider)
+                    }
             }
+            else -> {
+                Preview.Builder()
+                    .setTargetResolution(getSize())
+                    .setTargetRotation(rotation)
+                    .build().also {
+                        it.setSurfaceProvider(getCameraPreviewView().surfaceProvider)
+                    }
+            }
+        }
     }
 
     private fun setImageAnalysis(screenAspectRatio: Int, rotation: Int) {
-
-        val imageAnalyzerOptions = ImageAnalysis.Builder()
-            .setTargetAspectRatio(screenAspectRatio)
-            .setTargetRotation(rotation)
-            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+        val imageAnalyzerOptions = when (scanningType) {
+            ScanningType.BARCODE, ScanningType.QR_CODE, ScanningType.TEXT_RECOGNITION -> {
+                ImageAnalysis.Builder()
+                    .setTargetAspectRatio(screenAspectRatio)
+                    .setTargetRotation(rotation)
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            }
+            else -> {
+                ImageAnalysis.Builder()
+                    .setTargetResolution(getSize())
+                    .setTargetRotation(rotation)
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            }
+        }
 
         barcodeImageAnalysis = imageAnalyzerOptions
             .build().also { imageAnalysis ->
@@ -92,6 +123,12 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
                     imageAnalysis.setAnalyzer(cameraExecutor, txtAnalyzer)
                 }
             }
+
+        faceRecognitionImageAnalysis = imageAnalyzerOptions.build().also { imageAnalysis ->
+            faceRecognitionAnalyzer?.let { faceAnalyzer ->
+                imageAnalysis.setAnalyzer(cameraExecutor, faceAnalyzer)
+            }
+        }
     }
 
     private fun getAspectRatio(): Int {
@@ -99,6 +136,12 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
             getCameraPreviewView().display?.getRealMetrics(it)
         }
         return ImageUtils.calculateAspectRatio(metrics.widthPixels, metrics.heightPixels)
+    }
+
+    private fun getSize(): Size {
+        val point = Point()
+        getCameraPreviewView().display?.getRealSize(point)
+        return Size(point.x, point.y)
     }
 
     private fun getDisplayRotation(): Int {
@@ -133,10 +176,29 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
             setImageAnalysis(screenAspectRatio, rotation)
 
             try {
-                bindCamera(
-                    cameraSelector, preview,
-                    barcodeImageAnalysis, textRecognitionImageAnalysis
-                )
+                when (scanningType) {
+                    ScanningType.BARCODE, ScanningType.QR_CODE -> bindCamera(
+                        cameraSelector,
+                        preview,
+                        barcodeImageAnalysis
+                    )
+                    ScanningType.TEXT_RECOGNITION -> bindCamera(
+                        cameraSelector,
+                        preview,
+                        textRecognitionImageAnalysis
+                    )
+                    ScanningType.MULTIPLE -> bindCamera(
+                        cameraSelector,
+                        preview,
+                        barcodeImageAnalysis,
+                        textRecognitionImageAnalysis
+                    )
+                    ScanningType.FACE_RECOGNITION -> bindCamera(
+                        cameraSelector,
+                        preview,
+                        faceRecognitionImageAnalysis
+                    )
+                }
                 scanningCameraListener?.onCameraInstanceReady()
             } catch (e: Exception) {
                 //Some devices doesn't support more than one use cases (barcode analyzer and text recognition)
@@ -179,6 +241,10 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
 
     protected fun stopCamera() {
         cameraProvider?.unbindAll()
+    }
+
+    protected fun isPortraitMode(): Boolean {
+        return context?.resources?.configuration?.orientation == Configuration.ORIENTATION_PORTRAIT
     }
 
     override fun onDestroyView() {

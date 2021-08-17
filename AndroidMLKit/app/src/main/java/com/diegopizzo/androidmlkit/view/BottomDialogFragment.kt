@@ -1,5 +1,6 @@
 package com.diegopizzo.androidmlkit.view
 
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
@@ -63,7 +64,15 @@ class BottomDialogFragment : BottomSheetDialogFragment() {
             action = Intent.ACTION_VIEW
             data = Uri.parse(binding.tvDataScanned.text as String)
         }
-        startActivity(sendIntent)
+        try {
+            startActivity(sendIntent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(
+                requireContext(),
+                R.string.action_can_not_be_performed,
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     private fun copyValueToClipboard() {
