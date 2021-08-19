@@ -55,7 +55,7 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
             }
             faceData?.let {
                 binding.apply {
-                    faceInfoOverlay.setFaceValues(it)
+                    faceInfoOverlay.setFaceValues(it, defaultCameraSelector == CameraSelector.LENS_FACING_FRONT)
                     graphicOverlay.setImageSourceInfo(
                         imageWidth,
                         imageHeight,
