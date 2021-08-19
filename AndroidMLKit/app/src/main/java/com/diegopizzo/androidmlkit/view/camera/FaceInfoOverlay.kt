@@ -6,14 +6,14 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.diegopizzo.androidmlkit.R
-import com.diegopizzo.androidmlkit.databinding.FaceRecognitionOverlayBinding
+import com.diegopizzo.androidmlkit.databinding.FaceInfoOverlayBinding
 import com.google.mlkit.vision.face.Face
 import kotlin.math.roundToInt
 
-class FaceScannerOverlay(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
+class FaceInfoOverlay(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
 
     private val binding =
-        FaceRecognitionOverlayBinding.inflate(LayoutInflater.from(context), this, true)
+        FaceInfoOverlayBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
         //set default value

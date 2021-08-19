@@ -1,6 +1,5 @@
 package com.diegopizzo.androidmlkit.view.camera
 
-import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -11,15 +10,9 @@ import com.google.mlkit.vision.face.FaceLandmark
 import kotlin.math.max
 import kotlin.math.min
 
-class FaceScannerLandmarkOverlay constructor(overlay: GraphicOverlay, private val face: Face?) :
+class FaceDetectorLandmarkOverlay constructor(overlay: GraphicOverlay, private val face: Face?) :
     Graphic(overlay) {
 
-
-    private val paint: Paint = Paint().apply {
-        color = Color.RED
-        style = Paint.Style.STROKE
-        strokeWidth = 20F
-    }
     private val rectPaint: Paint
     private val labelPaint: Paint
     private val facePositionPaint: Paint

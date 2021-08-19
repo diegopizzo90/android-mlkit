@@ -36,7 +36,7 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
     private lateinit var cameraExecutor: ExecutorService
     private var barcodeImageAnalysis: ImageAnalysis? = null
     private var textRecognitionImageAnalysis: ImageAnalysis? = null
-    private var faceRecognitionImageAnalysis: ImageAnalysis? = null
+    private var faceDetectorImageAnalysis: ImageAnalysis? = null
     private var camera: Camera? = null
     private var cameraProvider: ProcessCameraProvider? = null
 
@@ -52,7 +52,7 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
     protected abstract val textRecognitionAnalyzer: ImageAnalysis.Analyzer?
 
     //Provide image analyzer to scan a face
-    protected abstract val faceRecognitionAnalyzer: ImageAnalysis.Analyzer?
+    protected abstract val faceDetectorAnalyzer: ImageAnalysis.Analyzer?
 
     protected abstract val scanningType: ScanningType
 
@@ -124,8 +124,8 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
                 }
             }
 
-        faceRecognitionImageAnalysis = imageAnalyzerOptions.build().also { imageAnalysis ->
-            faceRecognitionAnalyzer?.let { faceAnalyzer ->
+        faceDetectorImageAnalysis = imageAnalyzerOptions.build().also { imageAnalysis ->
+            faceDetectorAnalyzer?.let { faceAnalyzer ->
                 imageAnalysis.setAnalyzer(cameraExecutor, faceAnalyzer)
             }
         }
@@ -193,10 +193,10 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
                         barcodeImageAnalysis,
                         textRecognitionImageAnalysis
                     )
-                    ScanningType.FACE_RECOGNITION -> bindCamera(
+                    ScanningType.FACE_DETECTOR -> bindCamera(
                         cameraSelector,
                         preview,
-                        faceRecognitionImageAnalysis
+                        faceDetectorImageAnalysis
                     )
                 }
                 scanningCameraListener?.onCameraInstanceReady()

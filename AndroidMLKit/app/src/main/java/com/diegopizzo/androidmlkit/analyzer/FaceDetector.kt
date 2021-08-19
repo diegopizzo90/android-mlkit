@@ -6,7 +6,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
 
-class FaceRecognition(override var listener: AnalyzerListener?) : BaseImageAnalyzer() {
+class FaceDetector(override var listener: AnalyzerListener?) : BaseImageAnalyzer() {
 
     @ExperimentalGetImage
     override fun analyze(imageProxy: ImageProxy) {

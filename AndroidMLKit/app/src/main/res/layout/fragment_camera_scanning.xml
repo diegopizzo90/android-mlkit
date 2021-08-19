@@ -17,12 +17,12 @@
         android:layout_height="match_parent" />
 
     <com.diegopizzo.androidmlkit.view.camera.GraphicOverlay
-        android:id="@+id/face_scanner_landmark_overlay"
+        android:id="@+id/graphic_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.diegopizzo.androidmlkit.view.camera.FaceScannerOverlay
-        android:id="@+id/face_scanner_overlay"
+    <com.diegopizzo.androidmlkit.view.camera.FaceInfoOverlay
+        android:id="@+id/face_info_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
