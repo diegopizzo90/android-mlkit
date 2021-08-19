@@ -33,8 +33,8 @@ class MainFragment : FragmentViewBinding<FragmentMainBinding>() {
             itemTextRecognition.setClickListener {
                 viewModel.process(ViewEvent.TextRecognitionScanningButtonClicked)
             }
-            itemFaceDetector.setClickListener {
-                viewModel.process(ViewEvent.FaceDetectorScanningButtonClicked)
+            itemFaceDetection.setClickListener {
+                viewModel.process(ViewEvent.FaceDetectionScanningButtonClicked)
             }
         }
     }

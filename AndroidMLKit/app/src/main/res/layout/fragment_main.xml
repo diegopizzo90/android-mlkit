@@ -42,25 +42,25 @@
         android:layout_marginEnd="24dp"
         app:backgroundColor="@color/text_recognition_color"
         app:imageSrc="@drawable/ic_text_recognition"
-        app:layout_constraintBottom_toTopOf="@+id/item_face_detector"
+        app:layout_constraintBottom_toTopOf="@+id/item_face_detection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_qr_code"
         app:text="@string/text_recognition" />
 
     <com.diegopizzo.androidmlkit.view.ItemFeature
-        android:id="@+id/item_face_detector"
+        android:id="@+id/item_face_detection"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
-        app:backgroundColor="@color/face_detector_color"
-        app:imageSrc="@drawable/ic_face_detector"
+        app:backgroundColor="@color/face_detection_color"
+        app:imageSrc="@drawable/ic_face_detection"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_text_recognition"
-        app:text="@string/face_detector" />
+        app:text="@string/face_detection" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

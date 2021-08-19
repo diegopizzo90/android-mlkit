@@ -10,7 +10,7 @@ import com.google.mlkit.vision.face.FaceLandmark
 import kotlin.math.max
 import kotlin.math.min
 
-class FaceDetectorLandmarkOverlay constructor(overlay: GraphicOverlay, private val face: Face?) :
+class FaceDetectionLandmarkOverlay constructor(overlay: GraphicOverlay, private val face: Face?) :
     Graphic(overlay) {
 
     private val rectPaint: Paint

@@ -36,7 +36,7 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
     private lateinit var cameraExecutor: ExecutorService
     private var barcodeImageAnalysis: ImageAnalysis? = null
     private var textRecognitionImageAnalysis: ImageAnalysis? = null
-    private var faceDetectorImageAnalysis: ImageAnalysis? = null
+    private var faceDetectionImageAnalysis: ImageAnalysis? = null
     private var camera: Camera? = null
     private var cameraProvider: ProcessCameraProvider? = null
 
@@ -52,7 +52,7 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
     protected abstract val textRecognitionAnalyzer: ImageAnalysis.Analyzer?
 
     //Provide image analyzer to scan a face
-    protected abstract val faceDetectorAnalyzer: ImageAnalysis.Analyzer?
+    protected abstract val faceDetectionAnalyzer: ImageAnalysis.Analyzer?
 
     protected abstract val scanningType: ScanningType
 
@@ -124,8 +124,8 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
                 }
             }
 
-        faceDetectorImageAnalysis = imageAnalyzerOptions.build().also { imageAnalysis ->
-            faceDetectorAnalyzer?.let { faceAnalyzer ->
+        faceDetectionImageAnalysis = imageAnalyzerOptions.build().also { imageAnalysis ->
+            faceDetectionAnalyzer?.let { faceAnalyzer ->
                 imageAnalysis.setAnalyzer(cameraExecutor, faceAnalyzer)
             }
         }
@@ -193,10 +193,10 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
                         barcodeImageAnalysis,
                         textRecognitionImageAnalysis
                     )
-                    ScanningType.FACE_DETECTOR -> bindCamera(
+                    ScanningType.FACE_DETECTION -> bindCamera(
                         cameraSelector,
                         preview,
-                        faceDetectorImageAnalysis
+                        faceDetectionImageAnalysis
                     )
                 }
                 scanningCameraListener?.onCameraInstanceReady()
@@ -258,6 +258,7 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
         super.onDestroy()
         barcodeImageAnalysis = null
         textRecognitionImageAnalysis = null
+        faceDetectionImageAnalysis = null
         scanningCameraListener = null
     }
 

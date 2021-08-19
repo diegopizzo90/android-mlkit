@@ -73,7 +73,7 @@ class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
             BarcodeScanningButtonClicked -> navigation.toCameraScanning(ScanningType.BARCODE)
             QrCodeScanningButtonClicked -> navigation.toCameraScanning(ScanningType.QR_CODE)
             TextRecognitionScanningButtonClicked -> navigation.toCameraScanning(ScanningType.TEXT_RECOGNITION)
-            FaceDetectorScanningButtonClicked -> navigation.toCameraScanning(ScanningType.FACE_DETECTOR)
+            FaceDetectionScanningButtonClicked -> navigation.toCameraScanning(ScanningType.FACE_DETECTION)
         }
     }
 }
@@ -86,7 +86,7 @@ sealed class ViewEvent {
     object BarcodeScanningButtonClicked : ViewEvent()
     object QrCodeScanningButtonClicked : ViewEvent()
     object TextRecognitionScanningButtonClicked : ViewEvent()
-    object FaceDetectorScanningButtonClicked : ViewEvent()
+    object FaceDetectionScanningButtonClicked : ViewEvent()
     object BottomDialogCancelButtonClicked : ViewEvent()
 }
 

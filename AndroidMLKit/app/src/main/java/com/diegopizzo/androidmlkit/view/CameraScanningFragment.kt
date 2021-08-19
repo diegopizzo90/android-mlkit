@@ -13,12 +13,12 @@ import androidx.lifecycle.Observer
 import com.diegopizzo.androidmlkit.R
 import com.diegopizzo.androidmlkit.analyzer.BarcodeAnalyzer
 import com.diegopizzo.androidmlkit.analyzer.BaseImageAnalyzer
-import com.diegopizzo.androidmlkit.analyzer.FaceDetector
+import com.diegopizzo.androidmlkit.analyzer.FaceDetection
 import com.diegopizzo.androidmlkit.analyzer.TextRecognition
 import com.diegopizzo.androidmlkit.camera.base.BaseCameraScanningFragment
 import com.diegopizzo.androidmlkit.databinding.FragmentCameraScanningBinding
 import com.diegopizzo.androidmlkit.view.camera.CodeScannerOverlay
-import com.diegopizzo.androidmlkit.view.camera.FaceDetectorLandmarkOverlay
+import com.diegopizzo.androidmlkit.view.camera.FaceDetectionLandmarkOverlay
 import com.diegopizzo.androidmlkit.view.navigation.ScanningType
 import com.diegopizzo.androidmlkit.view.viewmodel.MainViewModel
 import com.diegopizzo.androidmlkit.view.viewmodel.MainViewState
@@ -64,7 +64,7 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
                     )
                     graphicOverlay.clear()
                     graphicOverlay.add(
-                        FaceDetectorLandmarkOverlay(
+                        FaceDetectionLandmarkOverlay(
                             graphicOverlay,
                             faceData
                         )
@@ -97,9 +97,9 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
                     cameraScannerOverlay.setBoxFormatValue(CodeScannerOverlay.BoxFormat.TextRecognition)
                 }
             }
-            ScanningType.FACE_DETECTOR -> {
+            ScanningType.FACE_DETECTION -> {
                 defaultCameraSelector = CameraSelector.LENS_FACING_FRONT
-                setFaceDetectorOverlay()
+                setFaceDetectionOverlay()
             }
         }
     }
@@ -112,7 +112,7 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
         }
     }
 
-    private fun setFaceDetectorOverlay() {
+    private fun setFaceDetectionOverlay() {
         binding.apply {
             cameraScannerOverlay.visibility = View.GONE
             faceInfoOverlay.visibility = View.VISIBLE
@@ -188,9 +188,9 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
         )
     }
 
-    override val faceDetectorAnalyzer: BaseImageAnalyzer? by lazy {
-        if (scanningType != ScanningType.FACE_DETECTOR) return@lazy null
-        FaceDetector(analyzerListener)
+    override val faceDetectionAnalyzer: BaseImageAnalyzer? by lazy {
+        if (scanningType != ScanningType.FACE_DETECTION) return@lazy null
+        FaceDetection(analyzerListener)
     }
 
     private fun setRectangleOverlay() {
@@ -232,7 +232,7 @@ class CameraScanningFragment : BaseCameraScanningFragment<FragmentCameraScanning
         super.onDestroyView()
         barcodeAnalyzer?.disposeAnalyzer()
         textRecognitionAnalyzer?.disposeAnalyzer()
-        faceDetectorAnalyzer?.disposeAnalyzer()
+        faceDetectionAnalyzer?.disposeAnalyzer()
     }
 
     companion object {
