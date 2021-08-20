@@ -12,6 +12,7 @@
     <color name="qr_code_color">#21d2ba</color>
     <color name="text_recognition_color">#c873f4</color>
     <color name="face_detection_color">#e09d99</color>
+    <color name="object_detection_color">#bdc530</color>
     <color name="light_gray">#e4e4e4</color>
 
     <!-- color used for camera barcode overlay -->

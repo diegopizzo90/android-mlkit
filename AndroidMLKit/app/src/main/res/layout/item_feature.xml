@@ -5,16 +5,16 @@
     android:id="@+id/cl_item"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
+    android:layout_marginStart="24dp"
+    android:layout_marginEnd="24dp"
     android:elevation="5dp"
-    android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
     tools:background="@color/barcode_color">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_icon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginStart="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

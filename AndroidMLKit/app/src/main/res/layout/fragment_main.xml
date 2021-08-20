@@ -1,66 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_color">
 
-    <com.diegopizzo.androidmlkit.view.ItemFeature
-        android:id="@+id/item_barcode"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_main_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
-        app:backgroundColor="@color/barcode_color"
-        app:imageSrc="@drawable/ic_barcode"
-        app:layout_constraintBottom_toTopOf="@+id/item_qr_code"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:text="@string/barcode_scan" />
-
-    <com.diegopizzo.androidmlkit.view.ItemFeature
-        android:id="@+id/item_qr_code"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        app:backgroundColor="@color/qr_code_color"
-        app:imageSrc="@drawable/ic_qr_code"
-        app:layout_constraintBottom_toTopOf="@+id/item_text_recognition"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_barcode"
-        app:text="@string/qr_code_scan" />
-
-    <com.diegopizzo.androidmlkit.view.ItemFeature
-        android:id="@+id/item_text_recognition"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        app:backgroundColor="@color/text_recognition_color"
-        app:imageSrc="@drawable/ic_text_recognition"
-        app:layout_constraintBottom_toTopOf="@+id/item_face_detection"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_qr_code"
-        app:text="@string/text_recognition" />
-
-    <com.diegopizzo.androidmlkit.view.ItemFeature
-        android:id="@+id/item_face_detection"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
-        app:backgroundColor="@color/face_detection_color"
-        app:imageSrc="@drawable/ic_face_detection"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_text_recognition"
-        app:text="@string/face_detection" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="6"
+        tools:listitem="@layout/item_feature" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

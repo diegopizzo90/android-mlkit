@@ -4,6 +4,7 @@
     <string name="qr_code_scan">QR Code Scan</string>
     <string name="text_recognition">Text Recognition</string>
     <string name="face_detection">Face Detection</string>
+    <string name="object_detection">Object Detection</string>
     <string name="camera_permission_denied">Camera permission denied</string>
     <string name="action_can_not_be_performed">Action can not be performed</string>
     <string name="camera_not_available">Camera not available</string>
