@@ -35,7 +35,7 @@ class MainFragment : FragmentViewBinding<FragmentMainBinding>() {
                         QR_CODE -> viewModel.process(ViewEvent.QrCodeScanningButtonClicked)
                         TEXT_RECOGNITION -> viewModel.process(ViewEvent.TextRecognitionScanningButtonClicked)
                         FACE_DETECTION -> viewModel.process(ViewEvent.FaceDetectionScanningButtonClicked)
-                        OBJECT_DETECTION -> viewModel.process(ViewEvent.FaceDetectionScanningButtonClicked)
+                        OBJECT_DETECTION -> viewModel.process(ViewEvent.ObjectDetectionScanningButtonClicked)
                     }
                 }
             })

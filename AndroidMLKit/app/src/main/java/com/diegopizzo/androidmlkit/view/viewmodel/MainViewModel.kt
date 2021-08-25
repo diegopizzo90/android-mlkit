@@ -11,6 +11,7 @@ import com.diegopizzo.androidmlkit.view.navigation.ScanningType
 import com.diegopizzo.androidmlkit.view.viewmodel.ViewEffect.ShowBottomSheetFragment
 import com.diegopizzo.androidmlkit.view.viewmodel.ViewEvent.*
 import com.google.mlkit.vision.face.Face
+import com.google.mlkit.vision.objects.DetectedObject
 
 class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
 
@@ -52,10 +53,10 @@ class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
         _viewEffects.value = ShowBottomSheetFragment(formatData(dataScanned, isUrlValid))
     }
 
-    fun onDataScanned(faceData: Face, width: Int, height: Int) {
+    fun onDataScanned(scannedResult: List<Any?>, width: Int, height: Int) {
         viewState = viewState.copy(
             isCameraEnabled = null,
-            faceData = faceData,
+            scannedResult = scannedResult,
             imageWidth = width,
             imageHeight = height
         )
@@ -74,6 +75,7 @@ class MainViewModel(private val navigation: IMLKitNavigation) : ViewModel() {
             QrCodeScanningButtonClicked -> navigation.toCameraScanning(ScanningType.QR_CODE)
             TextRecognitionScanningButtonClicked -> navigation.toCameraScanning(ScanningType.TEXT_RECOGNITION)
             FaceDetectionScanningButtonClicked -> navigation.toCameraScanning(ScanningType.FACE_DETECTION)
+            ObjectDetectionScanningButtonClicked -> navigation.toCameraScanning(ScanningType.OBJECT_DETECTION)
         }
     }
 }
@@ -87,13 +89,15 @@ sealed class ViewEvent {
     object QrCodeScanningButtonClicked : ViewEvent()
     object TextRecognitionScanningButtonClicked : ViewEvent()
     object FaceDetectionScanningButtonClicked : ViewEvent()
+    object ObjectDetectionScanningButtonClicked : ViewEvent()
     object BottomDialogCancelButtonClicked : ViewEvent()
 }
 
 data class MainViewState(
     val isCameraEnabled: Boolean? = null,
     val isOpenLinkButtonVisible: Boolean = false,
-    val faceData: Face? = null,
+    val scannedResult: List<Any?> = emptyList(),
     val imageWidth: Int = 0,
-    val imageHeight: Int = 0
+    val imageHeight: Int = 0,
+    val objectsDetected: List<DetectedObject> = emptyList()
 )

@@ -187,8 +187,7 @@ public class GraphicOverlay extends View {
      *                    front camera.
      */
     public void setImageSourceInfo(int imageWidth, int imageHeight, boolean isFlipped, boolean isPortraitMode) {
-        Preconditions.checkState(imageWidth > 0, "image width must be positive");
-        Preconditions.checkState(imageHeight > 0, "image height must be positive");
+        if (imageWidth <= 0 && imageHeight <= 0) return;
         synchronized (lock) {
             if (isPortraitMode) {
                 // Swap width and height sizes when in portrait, since it will be rotated by

@@ -37,6 +37,7 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
     private var barcodeImageAnalysis: ImageAnalysis? = null
     private var textRecognitionImageAnalysis: ImageAnalysis? = null
     private var faceDetectionImageAnalysis: ImageAnalysis? = null
+    private var objectDetectionImageAnalysis: ImageAnalysis? = null
     private var camera: Camera? = null
     private var cameraProvider: ProcessCameraProvider? = null
 
@@ -53,6 +54,9 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
 
     //Provide image analyzer to scan a face
     protected abstract val faceDetectionAnalyzer: ImageAnalysis.Analyzer?
+
+    //Provide image analyzer to scan a objects
+    protected abstract val objectDetectionAnalyzer: ImageAnalysis.Analyzer?
 
     protected abstract val scanningType: ScanningType
 
@@ -129,6 +133,12 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
                 imageAnalysis.setAnalyzer(cameraExecutor, faceAnalyzer)
             }
         }
+
+        objectDetectionImageAnalysis = imageAnalyzerOptions.build().also { imageAnalysis ->
+            objectDetectionAnalyzer?.let { objectAnalyzer ->
+                imageAnalysis.setAnalyzer(cameraExecutor, objectAnalyzer)
+            }
+        }
     }
 
     private fun getAspectRatio(): Int {
@@ -198,6 +208,11 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
                         preview,
                         faceDetectionImageAnalysis
                     )
+                    ScanningType.OBJECT_DETECTION -> bindCamera(
+                        cameraSelector,
+                        preview,
+                        objectDetectionImageAnalysis
+                    )
                 }
                 scanningCameraListener?.onCameraInstanceReady()
             } catch (e: Exception) {
@@ -259,6 +274,7 @@ abstract class BaseCameraScanningFragment<B : ViewBinding> : FragmentViewBinding
         barcodeImageAnalysis = null
         textRecognitionImageAnalysis = null
         faceDetectionImageAnalysis = null
+        objectDetectionImageAnalysis = null
         scanningCameraListener = null
     }
 

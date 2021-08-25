@@ -23,9 +23,7 @@ class FaceDetection(override var listener: AnalyzerListener?) : BaseImageAnalyze
 
         detector.process(image)
             .addOnSuccessListener {
-                it.map { face ->
-                    listener?.onFaceDataScanned(face, image.width, image.height)
-                }
+                listener?.onCustomDataScanned(it, image.width, image.height)
             }
             .addOnCompleteListener {
                 closeScanning(imageProxy)
