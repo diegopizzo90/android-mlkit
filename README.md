@@ -3,7 +3,7 @@ Sample app to have an general overview about the machine learning kit for mobile
 
 # MLkit features used
 - Barcode scanning
-- QrCode scanning
+- QRCode scanning
 - Face detection
 - Object detection
 
