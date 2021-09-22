@@ -12,5 +12,5 @@ This project is based on MVVM pattern and written with Kotlin.
 
 # Third-party libraries
 **Koin**  
-Koin is a framework for the dependency injection. I have chosen to use this framework because I think is more simple than Dagger2. Avoid writing many classes, reducing boilerplate and it's easier to understand.
+Koin is a framework for the dependency injection.
 Link: https://github.com/InsertKoinIO/koin
