@@ -1,5 +1,5 @@
 # android-mlkit
-Sample app to have an general overview about the machine learning kit for mobile developers. https://developers.google.com/ml-kit
+Sample app to have a general overview about the machine learning kit for mobile developers. https://developers.google.com/ml-kit
 
 # MLkit features used
 - Barcode scanning
